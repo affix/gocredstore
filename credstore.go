@@ -6,7 +6,7 @@ import (
 
 	"github.com/affix/gocredstore/pkg/darwin"
 	"github.com/affix/gocredstore/pkg/linux"
-	"github.com/affix/gocredstore/pkg/windows"
+	"github.com/affix/gocredstore/pkg/wincred"
 )
 
 type credstore interface {
@@ -21,8 +21,8 @@ func CredWrite(itemName string, itemValue []byte) error {
 	store := credstore(nil)
 	switch runtime.GOOS {
 	case "windows":
-		store = &windows.WindowsCredStore{}
-		itemValue = windows.CredBlob(itemValue)
+		store = &wincred.WindowsCredStore{}
+		itemValue = wincred.CredBlob(itemValue)
 	case "darwin":
 		store = &darwin.DarwinCredStore{}
 	case "linux":
@@ -40,7 +40,7 @@ func CredRead(itemName string) ([]byte, error) {
 	store := credstore(nil)
 	switch runtime.GOOS {
 	case "windows":
-		store = &windows.WindowsCredStore{}
+		store = &wincred.WindowsCredStore{}
 	case "darwin":
 		store = &darwin.DarwinCredStore{}
 	case "linux":
@@ -58,7 +58,7 @@ func CredDelete(itemName string) error {
 	store := credstore(nil)
 	switch runtime.GOOS {
 	case "windows":
-		store = &windows.WindowsCredStore{}
+		store = &wincred.WindowsCredStore{}
 	case "darwin":
 		store = &darwin.DarwinCredStore{}
 	case "linux":

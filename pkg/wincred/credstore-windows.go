@@ -1,4 +1,4 @@
-package windows
+package wincred
 
 import (
 	"syscall"
@@ -34,7 +34,7 @@ const (
 )
 
 // Read retrieves a credential from the Windows Credential Manager.
-func (w *WindowsCredStore) Read(targetName string, typ uint32) ([]byte, error) {
+func (w *WindowsCredStore) Read(targetName string) ([]byte, error) {
 	advapi32 := syscall.NewLazyDLL("advapi32.dll")
 
 	var cred *CREDENTIAL
@@ -47,7 +47,7 @@ func (w *WindowsCredStore) Read(targetName string, typ uint32) ([]byte, error) {
 	}
 
 	// Call Windows API
-	ret, _, err := advapi32.NewProc("CredReadW").Call(credPtr, typ, 0, uintptr(unsafe.Pointer(&cred)))
+	ret, _, err := advapi32.NewProc("CredReadW").Call(credPtr, CRED_TYPE_GENERIC, 0, uintptr(unsafe.Pointer(&cred)))
 	if ret == 0 {
 		return nil, err
 	}
@@ -59,7 +59,7 @@ func (w *WindowsCredStore) Read(targetName string, typ uint32) ([]byte, error) {
 }
 
 // Write stores a credential in the Windows Credential Manager.
-func (w *WindowsCredStore) Write(targetName string, credBlob []byte, typ uint32) error {
+func (w *WindowsCredStore) Write(targetName string, credBlob []byte) error {
 	advapi32 := syscall.NewLazyDLL("advapi32.dll")
 	var cred *CREDENTIAL
 	var credPtr uintptr
@@ -71,7 +71,7 @@ func (w *WindowsCredStore) Write(targetName string, credBlob []byte, typ uint32)
 	}
 
 	// Call Windows API
-	ret, _, err := advapi32.NewProc("CredWriteW").Call(credPtr, typ, 0, uintptr(unsafe.Pointer(&cred)))
+	ret, _, err := advapi32.NewProc("CredWriteW").Call(credPtr, CRED_TYPE_GENERIC, 0, uintptr(unsafe.Pointer(&cred)))
 	if ret == 0 {
 		return err
 	}

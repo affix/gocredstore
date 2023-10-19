@@ -37,7 +37,7 @@ func (l *LinuxCredStore) Read(itemName string) ([]byte, error) {
 
 	item, _ := col.GetItem(itemName)
 	_, _ = item.Unlock()
-	secret, _ := item.GetSecret()
+	secret, _ := item.GetSecret("default")
 
 	return secret.Value, nil
 }
