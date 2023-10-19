@@ -16,7 +16,7 @@ type CREDENTIAL struct {
 	Type               uint32
 	TargetName         string
 	Comment            string
-	LastWritten        syscall.Filetime
+	LastWritten        uint64
 	CredentialBlobSize uint32
 	CredentialBlob     []byte
 	Persist            uint32
@@ -34,7 +34,7 @@ const (
 )
 
 // Read retrieves a credential from the Windows Credential Manager.
-func (w *WindowsCredential) Read(targetName string, typ uint32) ([]byte, error) {
+func (w *WindowsCredStore) Read(targetName string, typ uint32) ([]byte, error) {
 	advapi32 := syscall.NewLazyDLL("advapi32.dll")
 
 	var cred *CREDENTIAL
@@ -59,7 +59,7 @@ func (w *WindowsCredential) Read(targetName string, typ uint32) ([]byte, error) 
 }
 
 // Write stores a credential in the Windows Credential Manager.
-func (w *WindowsCredential) Write(targetName string, credBlob []byte, typ uint32) error {
+func (w *WindowsCredStore) Write(targetName string, credBlob []byte, typ uint32) error {
 	advapi32 := syscall.NewLazyDLL("advapi32.dll")
 	var cred *CREDENTIAL
 	var credPtr uintptr
@@ -80,8 +80,8 @@ func (w *WindowsCredential) Write(targetName string, credBlob []byte, typ uint32
 }
 
 // Delete removes a credential from the Windows Credential Manager.
-func (w *WindowsCredential) Delete(targetName string, typ uint32) error {
-	var cred *CREDENTIAL
+func (w *WindowsCredStore) Delete(targetName string) error {
+	advapi32 := syscall.NewLazyDLL("advapi32.dll")
 	var credPtr uintptr
 	var err error
 
@@ -91,7 +91,7 @@ func (w *WindowsCredential) Delete(targetName string, typ uint32) error {
 	}
 
 	// Call Windows API
-	ret, _, err := advapi32.NewProc("CredDeleteW").Call(credPtr, typ, 0)
+	ret, _, err := advapi32.NewProc("CredDeleteW").Call(credPtr, CRED_TYPE_GENERICa, 0)
 	if ret == 0 {
 		return err
 	}
