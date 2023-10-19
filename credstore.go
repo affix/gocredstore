@@ -17,16 +17,22 @@ type credstore interface {
 
 // CredWrite stores an item in the credential store with the given itemName and itemValue.
 // It returns an error if the item cannot be stored.
-func CredWrite(itemName string, itemValue []byte) error {
+func CredWrite(itemName string, itemValue []byte, appName string) error {
 	store := credstore(nil)
 	switch runtime.GOOS {
 	case "windows":
-		store = &wincred.WindowsCredStore{}
+		store = &wincred.WindowsCredStore{
+			Name: appName,
+		}
 		itemValue = wincred.CredBlob(itemValue)
 	case "darwin":
-		store = &darwin.DarwinCredStore{}
+		store = &darwin.DarwinCredStore{
+			Name: appName,
+		}
 	case "linux":
-		store = &linux.LinuxCredStore{}
+		store = &linux.LinuxCredStore{
+			Name: appName,
+		}
 	default:
 		return errors.New("unsupported operating system")
 	}
@@ -36,15 +42,21 @@ func CredWrite(itemName string, itemValue []byte) error {
 
 // CredRead retrieves an item from the credential store with the given itemName.
 // It returns an error if the item cannot be found.
-func CredRead(itemName string) ([]byte, error) {
+func CredRead(itemName string, appName string) ([]byte, error) {
 	store := credstore(nil)
 	switch runtime.GOOS {
 	case "windows":
-		store = &wincred.WindowsCredStore{}
+		store = &wincred.WindowsCredStore{
+			Name: appName,
+		}
 	case "darwin":
-		store = &darwin.DarwinCredStore{}
+		store = &darwin.DarwinCredStore{
+			Name: appName,
+		}
 	case "linux":
-		store = &linux.LinuxCredStore{}
+		store = &linux.LinuxCredStore{
+			Name: appName,
+		}
 	default:
 		return nil, errors.New("unsupported operating system")
 	}
@@ -54,15 +66,21 @@ func CredRead(itemName string) ([]byte, error) {
 
 // CredDelete removes an item from the credential store with the given itemName.
 // It returns an error if the item cannot be found or deleted.
-func CredDelete(itemName string) error {
+func CredDelete(itemName string, appName string) error {
 	store := credstore(nil)
 	switch runtime.GOOS {
 	case "windows":
-		store = &wincred.WindowsCredStore{}
+		store = &wincred.WindowsCredStore{
+			Name: appName,
+		}
 	case "darwin":
-		store = &darwin.DarwinCredStore{}
+		store = &darwin.DarwinCredStore{
+			Name: appName,
+		}
 	case "linux":
-		store = &linux.LinuxCredStore{}
+		store = &linux.LinuxCredStore{
+			Name: appName,
+		}
 	default:
 		return errors.New("unsupported operating system")
 	}

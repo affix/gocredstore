@@ -4,7 +4,9 @@ import (
 	"github.com/keybase/go-keychain"
 )
 
-type DarwinCredStore struct{}
+type DarwinCredStore struct {
+	Name string
+}
 
 // Write stores an item in the Darwin keychain.
 // Write stores an item in the Darwin credential store with the given itemName and itemValue.
@@ -32,7 +34,7 @@ func (d *DarwinCredStore) Delete(itemName string) error {
 // Delete removes an item from the Darwin credential store with the given itemName.
 // It returns an error if the item cannot be found or deleted.
 func (d *DarwinCredStore) Read(itemName string) ([]byte, error) {
-	query := buildItem(itemName)
+	query := d.buildItem(itemName)
 	query.SetMatchLimit(keychain.MatchLimitOne)
 	query.SetReturnData(true)
 	results, err := keychain.QueryItem(query)
@@ -44,10 +46,10 @@ func (d *DarwinCredStore) Read(itemName string) ([]byte, error) {
 	return password, err
 }
 
-func buildItem(itemName string) keychain.Item {
+func (d *DarwinCredStore) buildItem(itemName string) keychain.Item {
 	item := keychain.NewItem()
 	item.SetSecClass(keychain.SecClassGenericPassword)
-	item.SetService("gocredstore")
+	item.SetService(d.name)
 	item.SetAccount(itemName)
 	item.SetLabel(itemName)
 	return item

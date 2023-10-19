@@ -5,7 +5,9 @@ import (
 	keyring "github.com/ppacher/go-dbus-keyring"
 )
 
-type LinuxCredStore struct{}
+type LinuxCredStore struct {
+	Name string
+}
 
 // Write stores an item in the Linux keyring.
 // Write stores an item in the Linux credential store with the given itemName and itemValue.

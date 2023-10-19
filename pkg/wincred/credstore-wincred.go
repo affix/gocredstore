@@ -5,7 +5,9 @@ import (
 	"unsafe"
 )
 
-type WindowsCredStore struct{}
+type WindowsCredStore struct {
+	Name string
+}
 
 type CredBlob []byte
 
