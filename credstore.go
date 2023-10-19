@@ -25,7 +25,6 @@ func CredWrite(itemName string, itemValue []byte) error {
 		store = &darwin.DarwinCredStore{}
 	case "linux":
 		store = &linux.LinuxCredStore{}
-		return nil
 	default:
 		return errors.New("unsupported operating system")
 	}
