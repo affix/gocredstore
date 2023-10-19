@@ -15,6 +15,8 @@ type credstore interface {
 	Delete(itemName string) error
 }
 
+// CredWrite stores an item in the credential store with the given itemName and itemValue.
+// It returns an error if the item cannot be stored.
 func CredWrite(itemName string, itemValue []byte) error {
 	store := credstore(nil)
 	switch runtime.GOOS {
@@ -32,6 +34,8 @@ func CredWrite(itemName string, itemValue []byte) error {
 	return store.Write(itemName, itemValue)
 }
 
+// CredRead retrieves an item from the credential store with the given itemName.
+// It returns an error if the item cannot be found.
 func CredRead(itemName string) ([]byte, error) {
 	store := credstore(nil)
 	switch runtime.GOOS {
@@ -48,6 +52,8 @@ func CredRead(itemName string) ([]byte, error) {
 	return store.Read(itemName)
 }
 
+// CredDelete removes an item from the credential store with the given itemName.
+// It returns an error if the item cannot be found or deleted.
 func CredDelete(itemName string) error {
 	store := credstore(nil)
 	switch runtime.GOOS {

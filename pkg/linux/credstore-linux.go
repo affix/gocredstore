@@ -1,6 +1,3 @@
-//go:build linux
-// +build linux
-
 package linux
 
 import (
@@ -10,6 +7,9 @@ import (
 
 type LinuxCredStore struct{}
 
+// Write stores an item in the Linux keyring.
+// Write stores an item in the Linux credential store with the given itemName and itemValue.
+// It returns an error if the item cannot be stored.
 func (l *LinuxCredStore) Write(itemName string, itemValue []byte) error {
 	bus, _ := dbus.SessionBus()
 
@@ -23,6 +23,9 @@ func (l *LinuxCredStore) Write(itemName string, itemValue []byte) error {
 	return nil
 }
 
+// Read retrieves an item from the Linux keyring.
+// Read retrieves an item from the Linux credential store with the given itemName.
+// It returns an error if the item cannot be found.
 func (l *LinuxCredStore) Read(itemName string) ([]byte, error) {
 	bus, _ := dbus.SessionBus()
 
@@ -39,6 +42,9 @@ func (l *LinuxCredStore) Read(itemName string) ([]byte, error) {
 	return secret.Value, nil
 }
 
+// Delete removes the specified item from the Linux keyring.
+// Delete removes an item from the Linux credential store with the given itemName.
+// It returns an error if the item cannot be found or deleted.
 func (l *LinuxCredStore) Delete(itemName string) error {
 	bus, _ := dbus.SessionBus()
 

@@ -1,6 +1,3 @@
-//go:build windows
-// +build windows
-
 package windows
 
 import (
@@ -36,10 +33,7 @@ const (
 	CRED_PERSIST_ENTERPRISE    = 3
 )
 
-// CredRead reads a credential from the Windows Credential Manager.
-// targetName is the name of the credential to be read.
-// typ is the type of the credential to be read.
-// Returns the credential data as a byte slice and an error if the operation fails.
+// Read retrieves a credential from the Windows Credential Manager.
 func (w *WindowsCredential) Read(targetName string, typ uint32) ([]byte, error) {
 	advapi32 := syscall.NewLazyDLL("advapi32.dll")
 
@@ -64,11 +58,7 @@ func (w *WindowsCredential) Read(targetName string, typ uint32) ([]byte, error) 
 	return credBlob, nil
 }
 
-// CredWrite writes a credential to the Windows Credential Manager.
-// targetName is the name of the credential to be written.
-// credBlob is the credential data to be written.
-// typ is the type of the credential to be written.
-// Returns an error if the operation fails.
+// Write stores a credential in the Windows Credential Manager.
 func (w *WindowsCredential) Write(targetName string, credBlob []byte, typ uint32) error {
 	advapi32 := syscall.NewLazyDLL("advapi32.dll")
 	var cred *CREDENTIAL
@@ -89,10 +79,7 @@ func (w *WindowsCredential) Write(targetName string, credBlob []byte, typ uint32
 	return nil
 }
 
-// CredDelete deletes a credential from the Windows Credential Manager.
-// targetName is the name of the credential to be deleted.
-// typ is the type of the credential to be deleted.
-// Returns an error if the operation fails.
+// Delete removes a credential from the Windows Credential Manager.
 func (w *WindowsCredential) Delete(targetName string, typ uint32) error {
 	var cred *CREDENTIAL
 	var credPtr uintptr
